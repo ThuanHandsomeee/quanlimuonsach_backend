@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const TrackBookModel = new Schema({
+const TheoDoiMuonSach = new Schema({
     MaDocGia: { type: mongoose.Types.ObjectId, ref: "ReaderModel" },
     MaSach: { type: mongoose.Types.ObjectId, ref: "BookModel" },
     NgayMuon: { type: Date },
@@ -11,4 +11,5 @@ const TrackBookModel = new Schema({
     TraSach: { type: String, maxLength: 10 },
     ThanhTien: { type: Number },
 });
-module.exports = mongoose.model("TrackBookModel", TrackBookModel);
+
+module.exports = mongoose.model("TrackBookModel", TheoDoiMuonSach);
