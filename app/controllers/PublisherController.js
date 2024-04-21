@@ -26,26 +26,28 @@ class PublishedController {
 
     async addPublisher(req, res, next) {
         try {
-            const TenNxb = req.body.TenNxb;
-            const DiaChi = req.body.DiaChi;
+            console.log("Request Body:", req.body);
+            const { TenNxb, DiaChi } = req.body;
+            if (!TenNxb || !DiaChi) {
+                console.log("Missing required fields");
+                return res.status(400).json({ error: "Thiếu thông tin bắt buộc" });
+            }
             const existingPublished = await Published.findOne({ TenNxb });
             if (existingPublished) {
+                console.log("Publisher already exists:", existingPublished);
                 return res.json({ update: "Nhà Xuất bản đã tồn tại" });
             } else {
-                const newPublished = new Published({
-                    TenNxb,
-                    DiaChi,
-                });
+                const newPublished = new Published({ TenNxb, DiaChi });
                 await newPublished.save();
+                console.log("New publisher added:", newPublished);
                 return res.json({ message: "Đã thêm nhà xuất bản" });
             }
         } catch (error) {
-            console.log("Lỗi khi thêm nhà xuất bản", error);
-            res
-                .status(500)
-                .json({ message: "Lỗi khi thêm nhà xuất bản", error: error.message });
+            console.log("Error in addPublisher:", error);
+            res.status(500).json({ message: "Lỗi khi thêm nhà xuất bản", error: error.message });
         }
     }
+
 
     async updateProduct(req, res, next) {
         try {
