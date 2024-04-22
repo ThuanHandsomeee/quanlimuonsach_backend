@@ -26,27 +26,34 @@ class PublishedController {
 
     async addPublisher(req, res, next) {
         try {
-            console.log("Request Body:", req.body);
+            // Lấy thông tin từ req.body
             const { TenNxb, DiaChi } = req.body;
+
+            // Kiểm tra xem các trường bắt buộc có tồn tại không
             if (!TenNxb || !DiaChi) {
-                console.log("Missing required fields");
                 return res.status(400).json({ error: "Thiếu thông tin bắt buộc" });
             }
-            const existingPublished = await Published.findOne({ TenNxb });
-            if (existingPublished) {
-                console.log("Publisher already exists:", existingPublished);
-                return res.json({ update: "Nhà Xuất bản đã tồn tại" });
+
+            // Tìm kiếm nhà xuất bản đã tồn tại
+            const existingPublisher = await Publisher.findOne({ TenNxb });
+
+            // Nếu nhà xuất bản đã tồn tại, trả về thông báo và dữ liệu của nhà xuất bản đó
+            if (existingPublisher) {
+                return res.json({ update: "Nhà Xuất bản đã tồn tại", data: existingPublisher });
             } else {
-                const newPublished = new Published({ TenNxb, DiaChi });
-                await newPublished.save();
-                console.log("New publisher added:", newPublished);
-                return res.json({ message: "Đã thêm nhà xuất bản" });
+                // Nếu nhà xuất bản chưa tồn tại, tạo mới và lưu vào cơ sở dữ liệu
+                const newPublisher = new Publisher({ TenNxb, DiaChi });
+                await newPublisher.save();
+                console.log("New publisher added:", newPublisher);
+                return res.status(201).json({ message: "Đã thêm nhà xuất bản", data: newPublisher });
             }
         } catch (error) {
+            // Xử lý lỗi nếu có
             console.log("Error in addPublisher:", error);
             res.status(500).json({ message: "Lỗi khi thêm nhà xuất bản", error: error.message });
         }
     }
+
 
 
     async updateProduct(req, res, next) {
